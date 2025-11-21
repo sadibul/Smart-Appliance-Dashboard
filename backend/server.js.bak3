@@ -1,0 +1,296 @@
+const express = require('express');
+const cors = require('cors');
+const { getLiveMetrics } = require('./api/live-metrics');
+const { controlDevice } = require('./api/device-control');
+const { getTodayHourlyData, getHistoricalData, getSummaryStats } = require('./api/energy-history');
+const { getAccessToken } = require('./api/tuya-auth');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Request logging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Initialize Tuya connection
+app.get('/api/init', async (req, res) => {
+  try {
+    const token = await getAccessToken();
+    res.json({ 
+      success: true, 
+      message: 'Connected to Tuya Cloud',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Get live metrics (power, voltage, current, energy)
+app.get('/api/live', async (req, res) => {
+  try {
+    const metrics = await getLiveMetrics();
+    res.json({
+      success: true,
+      data: metrics
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Control device (turn on/off)
+app.post('/api/control', async (req, res) => {
+  try {
+    const { command } = req.body;
+    
+    if (!command || !['on', 'off'].includes(command.toLowerCase())) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Invalid command. Use "on" or "off"' 
+      });
+    }
+    
+    const result = await controlDevice(command.toLowerCase());
+    res.json({
+      success: true,
+      message: `Device turned ${command}`,
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Get today's hourly energy data
+app.get('/api/energy/today', async (req, res) => {
+  try {
+    const data = await getTodayHourlyData();
+    res.json({
+      success: true,
+      data: data
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Get historical energy data
+app.get('/api/energy/history', async (req, res) => {
+  try {
+    const days = parseInt(req.query.days) || 7;
+    const data = await getHistoricalData(days);
+    res.json({
+      success: true,
+      data: data
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Get summary statistics
+app.get("/api/energy/stats", async (req, res) => {
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+  try {
+    const period = req.query.period || 'today'; // today, week, month
+    const stats = await getSummaryStats(period);
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Unhandled error:', error);
+  res.status(500).json({ 
+    success: false, 
+    error: 'Internal server error' 
+  });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log('╔════════════════════════════════════════════════════════╗');
+  console.log('║     Smart Appliance Dashboard - Backend Server        ║');
+  console.log('╚════════════════════════════════════════════════════════╝');
+  console.log(`\n✓ Server running on port ${PORT}`);
+  console.log(`✓ Health check: http://localhost:${PORT}/health`);
+  console.log(`✓ API Base URL: http://localhost:${PORT}/api`);
+  console.log('\nAvailable endpoints:');
+  console.log('  GET  /api/init           - Initialize Tuya connection');
+  console.log('  GET  /api/live           - Get live metrics');
+  console.log('  POST /api/control        - Control device (on/off)');
+  console.log('  GET  /api/energy/today   - Get today\'s hourly data');
+  console.log('  GET  /api/energy/history - Get historical data');
+  console.log('  GET  /api/energy/stats   - Get summary statistics');
+  console.log('\n' + '─'.repeat(60) + '\n');
+});
+
+module.exports = app;

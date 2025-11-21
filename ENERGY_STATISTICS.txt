@@ -1,0 +1,24 @@
+
+📊 ENERGY MONITORING STATISTICS
+═══════════════════════════════════════════════════════════
+
+Total Readings Collected: 150
+Collection Period: 11/21/2025, 7:25:49 PM 
+               to 11/21/2025, 8:58:38 PM
+
+POWER CONSUMPTION:
+  • Average Power: 14.86 W
+  • Maximum Power: 30.1 W
+  • Minimum Power: 0 W
+
+ENERGY & COST:
+  • Total Energy Consumed: 0.6185 kWh
+  • Total Cost: ৳21.01
+  • Electricity Rate: ৳9.43/kWh
+
+DEVICE INFORMATION:
+  • Device ID: bf5b8d9c7f3f2daa3f09du
+  • Smart Plug: Tuya WiFi Smart Plug
+  • Location: Bangladesh
+
+═══════════════════════════════════════════════════════════

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Monitor - Simple</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body { background: #0f172a; color: white; padding: 20px; font-family: system-ui; }
+        .metric { background: #1e293b; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        .value { font-size: 2em; color: #6366f1; }
+    </style>
+</head>
+<body>
+    <h1>Energy Monitor Dashboard</h1>
+    <div id="status">Loading...</div>
+    
+    <div class="metric">
+        <div>Power Draw</div>
+        <div class="value" id="power">-- W</div>
+    </div>
+    
+    <div class="metric">
+        <div>Voltage</div>
+        <div class="value" id="voltage">-- V</div>
+    </div>
+    
+    <div class="metric">
+        <div>Current</div>
+        <div class="value" id="current">-- mA</div>
+    </div>
+    
+    <div class="metric">
+        <div>Today's Energy</div>
+        <div class="value" id="energy">-- kWh</div>
+    </div>
+    
+    <div class="metric">
+        <div>Daily Cost</div>
+        <div class="value" id="cost">৳--</div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        
+        async function updateMetrics() {
+            try {
+                document.getElementById('status').textContent = 'Connected ✓';
+                document.getElementById('status').style.color = '#10b981';
+                
+                const response = await fetch(API_BASE + '/live');
+                const result = await response.json();
+                
+                if (result.success) {
+                    const data = result.data;
+                    document.getElementById('power').textContent = data.power + ' W';
+                    document.getElementById('voltage').textContent = data.voltage + ' V';
+                    document.getElementById('current').textContent = data.current + ' mA';
+                    document.getElementById('energy').textContent = data.totalEnergy + ' kWh';
+                    document.getElementById('cost').textContent = '৳' + data.dailyProjection;
+                } else {
+                    throw new Error('API returned error');
+                }
+            } catch (error) {
+                document.getElementById('status').textContent = 'Error: ' + error.message;
+                document.getElementById('status').style.color = '#ef4444';
+                console.error('Update failed:', error);
+            }
+        }
+        
+        // Update immediately
+        updateMetrics();
+        
+        // Auto-refresh every 5 seconds
+        setInterval(updateMetrics, 5000);
+        
+        console.log('Simple dashboard initialized');
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e293b; color: #fff; }
+        button { padding: 10px 20px; margin: 10px; background: #6366f1; color: white; border: none; cursor: pointer; }
+        pre { background: #0f172a; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <h1>API Connection Test</h1>
+    
+    <button onclick="testInit()">Test /api/init</button>
+    <button onclick="testLive()">Test /api/live</button>
+    <button onclick="testHistory()">Test /api/energy/history</button>
+    
+    <h3>Results:</h3>
+    <div id="results"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        const results = document.getElementById('results');
+
+        async function testInit() {
+            try {
+                const res = await fetch(API_BASE + '/init');
+                const data = await res.json();
+                results.innerHTML = `<div class="success">✓ /api/init SUCCESS</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (err) {
+                results.innerHTML = `<div class="error">✗ /api/init FAILED: ${err.message}</div>`;
+            }
+        }
+
+        async function testLive() {
+            try {
+                const res = await fetch(API_BASE + '/live');
+                const data = await res.json();
+                results.innerHTML = `<div class="success">✓ /api/live SUCCESS</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (err) {
+                results.innerHTML = `<div class="error">✗ /api/live FAILED: ${err.message}</div>`;
+            }
+        }
+
+        async function testHistory() {
+            try {
+                const res = await fetch(API_BASE + '/energy/history');
+                const data = await res.json();
+                results.innerHTML = `<div class="success">✓ /api/energy/history SUCCESS</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (err) {
+                results.innerHTML = `<div class="error">✗ /api/energy/history FAILED: ${err.message}</div>`;
+            }
+        }
+
+        // Auto-test on load
+        window.onload = () => {
+            testLive();
+        };
+    </script>
+</body>
+</html>

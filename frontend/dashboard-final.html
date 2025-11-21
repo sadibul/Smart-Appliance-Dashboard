@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Monitor Dashboard - Live</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="dashboard-page">
+    <header class="dashboard-header">
+        <div class="header-left">
+            <div class="logo-small">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Energy Monitor</h1>
+                <p class="header-subtitle">Real-time appliance tracking and insights</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="status-indicator">
+                <span class="status-dot online"></span>
+                <span id="statusText">Connecting...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <!-- Control Panel -->
+        <section class="control-panel">
+            <div class="control-card">
+                <h2>Control</h2>
+                <div class="device-selector">
+                    <label>DEVICE</label>
+                    <select id="deviceSelect">
+                        <option value="bf5b8d9c7f3f2daa3f09du">Smart Plug</option>
+                    </select>
+                </div>
+                <div class="power-control">
+                    <label>POWER</label>
+                    <button class="btn-power on" id="powerButton">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                        Turn OFF
+                    </button>
+                </div>
+                <div class="rate-info">
+                    <label>RATE (৳/KWH)</label>
+                    <div class="rate-display">৳ 9.43</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Metrics -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">POWER DRAW</div>
+                <div class="metric-value" id="powerValue">-- W</div>
+                <div class="metric-subtitle">Real-time</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">VOLTAGE</div>
+                <div class="metric-value" id="voltageValue">-- V</div>
+                <div class="metric-subtitle">Current voltage</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">CURRENT</div>
+                <div class="metric-value" id="currentValue">-- mA</div>
+                <div class="metric-subtitle">Current draw</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">TODAY'S ENERGY</div>
+                <div class="metric-value" id="energyValue">-- kWh</div>
+                <div class="metric-subtitle">Cumulative</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">HOURLY COST</div>
+                <div class="metric-value" id="hourlyCostValue">৳--</div>
+                <div class="metric-subtitle">Current rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">DAILY PROJECTION</div>
+                <div class="metric-value" id="dailyProjectionValue">৳--</div>
+                <div class="metric-subtitle">Estimated</div>
+            </div>
+        </section>
+
+        <!-- Power Draw Chart -->
+        <section class="chart-section">
+            <div class="chart-header">
+                <h2>Power Draw</h2>
+                <div class="chart-info">
+                    <span>Real-time power consumption (last 20 readings)</span>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="powerDrawChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Energy Usage Trend Chart -->
+        <section class="chart-section">
+            <div class="chart-header">
+                <h2>Energy Usage Trend</h2>
+                <div class="chart-info">
+                    <span>Historical energy consumption (last 7 days)</span>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="energyTrendChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="summary-section">
+            <div class="summary-header">
+                <h2>Summary</h2>
+            </div>
+            <div class="summary-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PERIOD</th>
+                            <th>ENERGY</th>
+                            <th>COST</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Today</td>
+                            <td id="summaryTodayEnergy">-- kWh</td>
+                            <td id="summaryTodayCost">৳--</td>
+                        </tr>
+                        <tr>
+                            <td>This Week</td>
+                            <td id="summaryWeekEnergy">-- kWh</td>
+                            <td id="summaryWeekCost">৳--</td>
+                        </tr>
+                        <tr>
+                            <td>This Month</td>
+                            <td id="summaryMonthEnergy">-- kWh</td>
+                            <td id="summaryMonthCost">৳--</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Usage Patterns Chart -->
+        <section class="chart-section">
+            <div class="chart-header">
+                <h2>Usage Patterns</h2>
+                <div class="chart-info">
+                    <span>Average power usage by hour of day</span>
+                </div>
+            </div>
+            <div class="chart-container small">
+                <canvas id="usagePatternsChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Export Section -->
+        <section class="export-section">
+            <h3>Export Data</h3>
+            <div class="export-buttons">
+                <button class="btn-export" id="exportCsvBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Export CSV
+                </button>
+                <button class="btn-export" id="exportJsonBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Export JSON
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Load Scripts in Order -->
+    <script src="api-config.js"></script>
+    <script src="api.js"></script>
+    <script src="charts.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
